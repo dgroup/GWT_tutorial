@@ -1,0 +1,1 @@
+GWT sample RPC classes

@@ -1,0 +1,1 @@
+Contains static resources that can be served publicly, such as image files, style sheets, and HTML host pages.

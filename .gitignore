@@ -1,0 +1,13 @@
+*.class
+*.jar
+*.iml
+*.ipr
+*.iws
+*.launch
+out
+/war/WEB-INF/classes/
+/war/WEB-INF/deploy/
+/war/WEB-INF/lib/
+/gwt-unitCache/
+gwt-unitCache/
+war/stockwatcher/
