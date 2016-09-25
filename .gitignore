@@ -1,6 +1,6 @@
 # Java files
 *.class
-
+*.jar
 *.war
 
 # Idea files
@@ -19,9 +19,3 @@ war/stockwatcher/
 reports/
 www-test/
 /build
-
-# Eclipse related stuff
-.classpath
-.project
-.settings
-/WebContent

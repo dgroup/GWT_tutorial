@@ -10,8 +10,11 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+
+import static com.google.gwt.i18n.client.DateTimeFormat.PredefinedFormat.DATE_TIME_MEDIUM;
 
 /**
  * Entry point classes define <code>onModuleLoad()</code>.
@@ -97,14 +100,12 @@ public class StockWatcher implements EntryPoint {
     }
 
     private void updateTable(StockPrice[] prices) {
-        for (int i = 0; i < prices.length; i++) {
-            updateTable(prices[i]);
-        }
+        for (StockPrice price : prices)
+            updateTable(price);
+
         // Display timestamp showing last refresh.
-        DateTimeFormat dateFormat = DateTimeFormat.getFormat(
-                DateTimeFormat.PredefinedFormat.DATE_TIME_MEDIUM);
-        lastUpdatedLabel.setText("Last update : "
-                + dateFormat.format(new Date()));
+        DateTimeFormat dateFormat = DateTimeFormat.getFormat(DATE_TIME_MEDIUM);
+        lastUpdatedLabel.setText("Last update : "+ dateFormat.format(new Date()));
     }
 
     private void updateTable(StockPrice price) {
