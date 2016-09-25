@@ -1,13 +1,27 @@
+# Java files
 *.class
-*.jar
+
+*.war
+
+# Idea files
 *.iml
 *.ipr
 *.iws
-*.launch
 out
+
+# GWT files
 /war/WEB-INF/classes/
 /war/WEB-INF/deploy/
 /war/WEB-INF/lib/
 /gwt-unitCache/
 gwt-unitCache/
 war/stockwatcher/
+reports/
+www-test/
+/build
+
+# Eclipse related stuff
+.classpath
+.project
+.settings
+/WebContent
