@@ -10,11 +10,11 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
 import static com.google.gwt.i18n.client.DateTimeFormat.PredefinedFormat.DATE_TIME_MEDIUM;
+import static com.google.gwt.i18n.client.NumberFormat.getFormat;
 
 /**
  * Entry point classes define <code>onModuleLoad()</code>.
@@ -41,9 +41,20 @@ public class StockWatcher implements EntryPoint {
         stocksFlexTable.setText(0, 2, "Change");
         stocksFlexTable.setText(0, 3, "Remove");
 
+        // Add styles to elements in the stock list table.
+        stocksFlexTable.setCellPadding(6);
+
+        // Add styles to elements in the stock list table.
+        stocksFlexTable.getRowFormatter().addStyleName(0, "watchListHeader");
+        stocksFlexTable.addStyleName("watchList");
+        stocksFlexTable.getCellFormatter().addStyleName(0, 1, "watchListNumericColumn");
+        stocksFlexTable.getCellFormatter().addStyleName(0, 2, "watchListNumericColumn");
+        stocksFlexTable.getCellFormatter().addStyleName(0, 3, "watchListRemoveColumn");
+
         // Assemble Add Stock panel.
         addPanel.add(newSymbolTextBox);
         addPanel.add(addStockButton);
+        addPanel.addStyleName("addPanel");
 
         // Assemble Main panel.
         mainPanel.add(stocksFlexTable);
@@ -105,7 +116,7 @@ public class StockWatcher implements EntryPoint {
 
         // Display timestamp showing last refresh.
         DateTimeFormat dateFormat = DateTimeFormat.getFormat(DATE_TIME_MEDIUM);
-        lastUpdatedLabel.setText("Last update : "+ dateFormat.format(new Date()));
+        lastUpdatedLabel.setText("Last update : " + dateFormat.format(new Date()));
     }
 
     private void updateTable(StockPrice price) {
@@ -117,16 +128,25 @@ public class StockWatcher implements EntryPoint {
         int row = stocks.indexOf(price.getSymbol()) + 1;
 
         // Format the data in the Price and Change fields.
-        String priceText = NumberFormat.getFormat("#,##0.00").format(
-                price.getPrice());
-        NumberFormat changeFormat = NumberFormat.getFormat("+#,##0.00;-#,##0.00");
+        String priceText = getFormat("#,##0.00").format(price.getPrice());
+        NumberFormat changeFormat = getFormat("+#,##0.00;-#,##0.00");
         String changeText = changeFormat.format(price.getChange());
         String changePercentText = changeFormat.format(price.getChangePercent());
 
         // Populate the Price and Change fields with new data.
         stocksFlexTable.setText(row, 1, priceText);
-        stocksFlexTable.setText(row, 2, changeText + " (" + changePercentText
-                + "%)");
+        Label changeWidget = (Label) stocksFlexTable.getWidget(row, 2);
+        changeWidget.setText(changeText + " (" + changePercentText + "%)");
+
+        // Change the color of text in the Change field based on its value.
+        String changeStyleName = "noChange";
+        if (price.getChangePercent() < -0.1f) {
+            changeStyleName = "negativeChange";
+        } else if (price.getChangePercent() > 0.1f) {
+            changeStyleName = "positiveChange";
+        }
+
+        changeWidget.setStyleName(changeStyleName);
     }
 
     /**
@@ -152,9 +172,14 @@ public class StockWatcher implements EntryPoint {
         int row = stocksFlexTable.getRowCount();
         stocks.add(symbol);
         stocksFlexTable.setText(row, 0, symbol);
+        stocksFlexTable.setWidget(row, 2, new Label());
+        stocksFlexTable.getCellFormatter().addStyleName(row, 1, "watchListNumericColumn");
+        stocksFlexTable.getCellFormatter().addStyleName(row, 2, "watchListNumericColumn");
+        stocksFlexTable.getCellFormatter().addStyleName(row, 3, "watchListRemoveColumn");
 
         // Add a button to remove this stock from the table.
         Button removeStockButton = new Button("x");
+        removeStockButton.addStyleDependentName("remove");
         removeStockButton.addClickHandler(new ClickHandler() {
             public void onClick(ClickEvent event) {
                 int removedIndex = stocks.indexOf(symbol);
